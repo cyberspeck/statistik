@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """ Skeleton file, das eure Lernkurve beschleunigen soll,
     fuer Uebung 1.6.  
@@ -20,7 +20,7 @@ import numpy, scipy.misc, math, scipy.integrate
 ## numpy.linspace ( a, b, n )
 
 ## Plotten, siehe https://matplotlib.org/
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 ## Plotte y versus x, als Linie, mit Label "label1"
 plt.plot ( [1., 2., 5. ], [3, 1., 4. ], label="label1"  ) 
@@ -33,4 +33,5 @@ plt.xlabel("x axis")
 plt.legend()
 
 ## Speichere in Bilddatei (pdf, png, ... )
-plt.savefig ( "dummy.pdf" )
+#plt.savefig ( "dummy.pdf" )
+plt.show()
