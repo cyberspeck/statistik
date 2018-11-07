@@ -13,25 +13,20 @@ import numpy as np
 import scipy.misc, scipy.integrate
 import matplotlib.pyplot as plt
 
-def expect(f, a,b):
+def expect(f, a,b, exp=1):
     '''
     returns expected value of function f for range [a,b]
     '''
-    integrand = lambda y: f(y)*y
+    integrand = lambda y: f(y)* y**exp
     result = scipy.integrate.quad ( integrand, a, b )[0]
     return result
-
-    return (k+a)/(a+b+n)
 
 def variance(f, expected_value, a,b):
     '''
     returns expected value of function f for range [a,b]
     '''
-    g = lambda x: (f(x)-expected_value)**2
-    result = expect(g, a, b)
+    result = expect(f, a,b,2) - expect(f, a,b)**2
     return result
-
-    return (k+a)/(a+b+n)
 
 def expect_of_beta(a,b):
     '''
@@ -93,7 +88,7 @@ print(" var = {}".format(poA_variance))
 poA_variance_numerical = variance(poA, poA_expect_numerical, 0,1)
 print("    Kontrolle mit klassischer Formel\n var = {}".format(poA_variance_numerical))
 deltaVar = abs(poA_variance - poA_variance_numerical)
-#print("    ausreichende Übereinstimmung:\n delta = {}".format(deltaVar))
+print("    ausreichende Übereinstimmung:\n delta = {}".format(deltaVar))
 
 ### plot
 dataPoints = np.linspace ( 0, 1, 1000 )
