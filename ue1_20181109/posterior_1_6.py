@@ -78,7 +78,7 @@ print("Erwartungswert E[Be(x,y)] = x/(x+y)")
 poA_expect = expect_of_beta(poA_a, poA_b)
 print(" E = {}".format(poA_expect))
 poA_expect_numerical = expect(poA, 0,1)
-print("    Kontrolle mit klassischer Formel\n E = {}".format(poA_expect_numerical))
+print("    Kontrolle mit frequentistisch Formel\n E = {}".format(poA_expect_numerical))
 deltaE = abs(poA_expect - poA_expect_numerical)
 print("    ausreichende Übereinstimmung:\n delta = {}".format(deltaE))
 
@@ -86,7 +86,7 @@ print("\nVarianz var[Be(x,y)] = xy/((x+y)^2 * (x+y+1))")
 poA_variance = variance_of_beta(poA_a, poA_b)
 print(" var = {}".format(poA_variance))
 poA_variance_numerical = variance(poA, poA_expect_numerical, 0,1)
-print("    Kontrolle mit klassischer Formel\n var = {}".format(poA_variance_numerical))
+print("    Kontrolle mit frequentistisch Formel\n var = {}".format(poA_variance_numerical))
 deltaVar = abs(poA_variance - poA_variance_numerical)
 print("    ausreichende Übereinstimmung:\n delta = {}".format(deltaVar))
 
@@ -108,7 +108,7 @@ prB = lambda p: (np.sin ( np.pi*p ))**2
 poB = lambda p: posterior(p, prB, likely_bernoulli, k,n)
 poB_expect_numerical = expect(poB, 0,1)
 poB_variance_numerical = variance(poB, poB_expect_numerical, 0,1)
-print("Mit klassischer Formeln:\n E = {}".format(poB_expect_numerical))
+print("Mit frequentistisch Formeln:\n E = {}".format(poB_expect_numerical))
 print(" var = {}".format(poB_variance_numerical))
 
 ### plot
