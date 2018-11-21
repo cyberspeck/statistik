@@ -42,8 +42,13 @@ def likelyhood_ex(tau,s,n):
 
 def getPosterior(tau, prior, likely, s,n):
     numerator = lambda tau: likely(tau, s,n) * prior(tau)
-    nominator = lambda tau: scipy.integrate.quad ( numerator, 0, 200 )[0]
+    nominator = lambda tau: scipy.integrate.quad ( numerator, 0, 30 )[0]
     result = numerator(tau) / nominator(tau)
+    return result
+
+def confidence_interval(density, alpha):
+    func = lambda tau: scipy.integrate.quad ( density, 0., tau )[0] -alpha
+    result = scipy.optimize.fsolve ( func, x0=1 )
     return result
 
 
@@ -67,15 +72,19 @@ if __name__ == '__main__':
     print(" s={}".format(s))
 
 
-
-    #prior = lambda x: scipy.stats.gamma.pdf(x,a,scale=b)
+    prior_scaled = lambda x: scipy.stats.gamma.pdf(x,a,scale=b)
     prior = lambda x: x**(a-1) * np.exp(-x / b) / b**a
     posterior = lambda tau: getPosterior(tau, prior, likelyhood_ex, s,n)
 
     posterior_expect = s/n
     print("\n Bayes-Schätzer = {}".format(posterior_expect))
     posterior_expect_numerical = expect(posterior, 0,20)
-    print("\n E[tau] = {}".format(posterior_expect_numerical))
+    print(" E[tau] = {}".format(posterior_expect_numerical))
+
+    leftLimit = confidence_interval(posterior, 0.025)
+    rightLimit = confidence_interval(posterior, 0.975)
+    print("Symmetrisches 95% KI:")
+    print(" [{}, {}]".format(leftLimit, rightLimit))
 
     ### plot
     dataPoints = np.linspace ( 0.001, 15, 1000 )
