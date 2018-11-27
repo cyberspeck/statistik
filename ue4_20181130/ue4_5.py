@@ -11,7 +11,7 @@ import threading
 
 n_threads = 1
 n_samples = 5000
-n_samples = 2
+n_samples = 10
 n = 250
 
 mu = 0
@@ -77,10 +77,21 @@ class simulation(threading.Thread):
     def run(self):
         for j in range(int(n_samples/n_threads)):
 
-            s = 0
+            sample = []
             for i in range(n):
-                s+= mixed_norm()
-            print(" s={}".format(s))
+                sample.append(mixed_norm())
+            sorted_sample = sorted(sample)
+            s = sum(sample)
+            e = s/n
+            m = 0
+            if n%2==0:
+                m  = sorted_sample[int(n/2)]
+                m += sorted_sample[int(n/2)-1]
+                m /= 2
+            else:
+                m = sorted_sample[int(len(sorted_sample)/2)]
+
+            print(" s={}, e={}, m={}".format(s,e,m))
             self.rtd[self.id]['executed'] += 1
 
         self.rtd[self.id]['done'] = True
