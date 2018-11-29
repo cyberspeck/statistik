@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 ##!/usr/bin/python3
 
+'''
+sources of inspiration:
+https://cseweb.ucsd.edu/~elkan/250Bwinter2011/mixturemodels.pdf
+https://www.python-course.eu/expectation_maximization_and_gaussian_mixture_models.php
+'''
+
+
 import time
 import numpy as np
 from scipy.stats import norm
