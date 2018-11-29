@@ -3,7 +3,7 @@
 
 import time
 import numpy as np
-import scipy.stats, scipy.special
+import scipy.stats
 from matplotlib import pyplot as plt
 import threading
 
@@ -15,56 +15,28 @@ n_samples = 10
 n = 250
 
 mu = 0
-p = .7
 var1 = 1
 var2 = 10
 
+mu = [0, 0]
+sigma = [1, np.sqrt(10)]
+weights = [.7, .3]
 
-def perf_integral(func, lower, upper, precision = 3):
-    step = (1/10**precision)
-    start = lower + 0.5*step
-    value = 0
-    return  value
 
-def expect(f, a,b, exp=1):#not in use
-    '''
-    returns expected value of function f for range [a,b]
-    '''
-    integrand = lambda y: f(y)* y**exp
-    norm = lambda y: f(y)
-    try:
-        norm_factor =  scipy.integrate.quad ( norm, a, b )[0]
-    except:
-        return -1
-    try:
-        result = scipy.integrate.quad ( integrand, a, b )[0]
-    except:
-        return -1
-    return result / norm_factor
+class gaussian_mix():
+    def __init__(self, mu, sigma, weights):
+        self.mu = mu
+        self.sigma = sigma
+        self.weights = weights
 
-def variance(f, expected_value, a,b):
-    '''
-    returns expected value of function f for range [a,b]
-    '''
-    result = expect(f, a,b,2) - expect(f, a,b)**2
-    return result
+    def draw(self, sample_size):
+        sample = np.empty((sample_size))
+        for i in range(sample_size):
+            Z = np.random.choice([0,1], p=weights) # latent variable
+            sample[i] = (np.random.normal(mu[Z], sigma[Z], 1))
+        return sample
 
-def likelyhood_ex(tau,s,n):
-    return 1/(tau ** n) * np.exp(-s / tau)
-
-def normfactor(func, limit):
-    try:
-        result = 1 / scipy.integrate.quad(func, 0., limit)[0]
-    except:
-        result = -1
-    return result
-
-def mixed_norm():
-    random1 = p * scipy.stats.norm.rvs(mu,scale=np.sqrt(var1))
-    random2 = (1-p) * scipy.stats.norm.rvs(mu,scale=np.sqrt(var2))
-    result = random1 + random2
-    return result;
-
+mixed = gaussian_mix(mu, sigma, weights)
 
 class simulation(threading.Thread):
     def __init__(self, id, rtd):
@@ -77,21 +49,10 @@ class simulation(threading.Thread):
     def run(self):
         for j in range(int(n_samples/n_threads)):
 
-            sample = []
-            for i in range(n):
-                sample.append(mixed_norm())
-            sorted_sample = sorted(sample)
-            s = sum(sample)
-            e = s/n
-            m = 0
-            if n%2==0:
-                m  = sorted_sample[int(n/2)]
-                m += sorted_sample[int(n/2)-1]
-                m /= 2
-            else:
-                m = sorted_sample[int(len(sorted_sample)/2)]
+            sample = mixed.draw(n)
 
-            print(" s={}, e={}, m={}".format(s,e,m))
+
+
             self.rtd[self.id]['executed'] += 1
 
         self.rtd[self.id]['done'] = True
@@ -114,7 +75,7 @@ if __name__ == '__main__':
     running = True
     t_start = time.time()
     while running:
-        time.sleep(5)
+        time.sleep(1)
         done_simulations = 0
         for k in range(n_threads):
             done_simulations += RTD[k]['executed']
